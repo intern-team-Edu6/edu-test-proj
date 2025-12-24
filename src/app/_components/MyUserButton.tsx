@@ -1,36 +1,18 @@
 "use client";
 
-import React, { useEffect } from "react";
-import {
-  ClerkProvider,
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-  useUser,
-} from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import React from "react";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Button } from "@/components/ui/button";
 
 export const MyUserButton = () => {
-  const { user, isLoaded } = useUser();
-  const router = useRouter();
-  console.log({ user });
-
-  useEffect(() => {
-    if (!isLoaded || !user) return;
-
-    const role = user?.publicMetadata?.role;
-
-    if (role === "admin") {
-      router.push("/admin/create-club");
-    }
-  }, [isLoaded, user, router]);
-
   return (
     <div className="flex items-center">
       <SignedOut>
-        <SignInButton />
+        <div className="flex gap-5">
+          <SignInButton>
+            <Button className="rounded-full cursor-pointer">Нэвтрэх</Button>
+          </SignInButton>
+        </div>
       </SignedOut>
       <SignedIn>
         <UserButton />
