@@ -56,7 +56,7 @@ const JamkaPage = () => {
     { id: "entertainment", label: "Зугаа цэнгэл", icon: "🎮" },
   ];
 
-  const availableDates = [
+  cons
     { date: "2025-01-15", day: "Да", dayNum: "15" },
     { date: "2025-01-16", day: "Мя", dayNum: "16" },
     { date: "2025-01-17", day: "Лх", dayNum: "17" },
