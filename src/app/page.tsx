@@ -1,12 +1,12 @@
 "use client";
 
-import JamkaPage from "@/components/jamka/page";
 import React from "react";
 import Map from "./_components/Map";
 import { use, useEffect } from "react";
 import Header from "./_components/Header";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import JamkaPage from "./jamka/page";
 
 export default function HomePage() {
   const { user, isSignedIn } = useUser();
