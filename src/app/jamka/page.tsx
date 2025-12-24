@@ -3,7 +3,7 @@ import { Calendar, Clock, MapPin } from "lucide-react";
 import { useState, useMemo } from "react";
 import { mockClubs } from "@/lib/mock-data";
 
-const JamkaPage = () => {
+const Filter = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [selectedTime, setSelectedTime] = useState<string>("");
@@ -495,4 +495,4 @@ const JamkaPage = () => {
     </div>
   );
 };
-export default JamkaPage;
+export default Filter;

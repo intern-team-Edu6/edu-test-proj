@@ -6,7 +6,7 @@ import { use, useEffect } from "react";
 import Header from "./_components/Header";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import JamkaPage from "./jamka/page";
+import { Filter } from "lucide-react";
 
 export default function HomePage() {
   const { user, isSignedIn } = useUser();
@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <div className="h-screen w-full">
       <Header children={undefined} />
-      <JamkaPage />
+      <Filter />
       <Map />
     </div>
   );
