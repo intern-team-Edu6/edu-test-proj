@@ -18,12 +18,14 @@ type Props = {
   clubs: Club[];
   userLocation: [number, number] | null;
   nearbyClubs: Club[];
+  selectedRadius: number;
 };
 
 export default function MapContent({
   clubs,
   userLocation,
   nearbyClubs,
+  selectedRadius,
 }: Props) {
   const router = useRouter();
 
@@ -60,7 +62,7 @@ export default function MapContent({
 
             <Circle
               center={userLocation}
-              radius={800}
+              radius={selectedRadius * 1000}
               pathOptions={{ color: "blue", fillOpacity: 0.1 }}
             />
           </div>

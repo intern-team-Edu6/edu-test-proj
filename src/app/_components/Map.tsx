@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { Club, mockClubs } from "@/lib/mock-data";
 import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 
 const MapContent = dynamic(() => import("./MapContent"), { ssr: false });
 
@@ -10,6 +11,8 @@ export default function Map({ filteredClubs }: { filteredClubs: Club[] }) {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(
     null
   );
+  const RADIUS_STEPS = [0.5, 1, 2, 3];
+  const [selectedRadius, setSelectedRadius] = useState<number>(0.5);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -47,7 +50,7 @@ export default function Map({ filteredClubs }: { filteredClubs: Club[] }) {
     return radius * c;
   }
 
-  const nearbyClubs = userLocation
+  const nearbyClubs: Club[] = userLocation
     ? filteredClubs.filter((club) => {
         const distance = getDistanceFromLatLonInKm(
           userLocation[0],
@@ -55,15 +58,38 @@ export default function Map({ filteredClubs }: { filteredClubs: Club[] }) {
           club.lat,
           club.lon
         );
-        return distance <= 5;
+        return distance <= selectedRadius;
       })
     : [];
 
   return (
-    <MapContent
-      clubs={filteredClubs}
-      userLocation={userLocation}
-      nearbyClubs={nearbyClubs}
-    />
+    <div>
+      <div className="flex gap-2 mb-4 justify-center">
+        {RADIUS_STEPS.map((r) => (
+          <Button
+            variant={"ghost"}
+            key={r}
+            onClick={() => setSelectedRadius(r)}
+            className={`px-4 py-1 rounded-lg text-sm transition ${
+              selectedRadius === r
+                ? // ? "text-slate-600 hover:bg-slate-100"
+                  // : "bg-slate-900 text-white shadow-lg"
+
+                  "bg-slate-900 text-white shadow-lg"
+                : "text-slate-600 "
+            }`}
+          >
+            {r < 1 ? `${r * 1000}m` : `${r}km`}
+          </Button>
+        ))}
+      </div>
+
+      <MapContent
+        clubs={filteredClubs}
+        userLocation={userLocation}
+        nearbyClubs={nearbyClubs}
+        selectedRadius={selectedRadius}
+      />
+    </div>
   );
 }
