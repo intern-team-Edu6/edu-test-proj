@@ -1,6 +1,12 @@
 "use client";
 
 import JamkaPage from "@/components/jamka/page";
+import React from "react";
+import Map from "./_components/Map";
+
+export default function HomePage() {
+  return (
+    <div style={{ height: "100vh", width: "100%" }}>
 import React, { use, useEffect } from "react";
 import Header from "./_components/Header";
 import { useRouter } from "next/navigation";
@@ -20,7 +26,7 @@ const HomePage = () => {
     <div>
       <Header children={undefined} />
       <JamkaPage />
+      <Map />
     </div>
   );
-};
-export default HomePage;
+}
