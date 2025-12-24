@@ -1,6 +1,7 @@
 export type Club = {
   _id: string;
   clubCategoryName: string;
+  clubCategoryType: string;
   classCategoryName: string;
   clubDescription: string;
   clubTime: string;
@@ -24,6 +25,7 @@ export const mockClubs: Club[] = [
   {
     _id: "65a7f1b2c9e77a0012a9c101",
     clubCategoryName: "Robotics Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "MIDDLESCHOOL",
     clubDescription:
       "Hands-on robotics club focusing on basic programming and mechanics.",
@@ -46,6 +48,7 @@ export const mockClubs: Club[] = [
   {
     _id: "65a7f1b2c9e77a0012a9c102",
     clubCategoryName: "Art Club",
+    clubCategoryType: "ARTS",
     classCategoryName: "ELEMENTARY",
     clubDescription: "Creative drawing and painting activities for children.",
     clubTime: "09:30",
@@ -67,6 +70,7 @@ export const mockClubs: Club[] = [
   {
     _id: "65a7f1b2c9e77a0012a9c103",
     clubCategoryName: "Math Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "HIGHSCHOOL",
     clubDescription: "Advanced problem solving and math competitions.",
     clubTime: "14:00",
@@ -88,6 +92,7 @@ export const mockClubs: Club[] = [
   {
     _id: "65a7f1b2c9e77a0012a9c104",
     clubCategoryName: "Coding Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "MIDDLESCHOOL",
     clubDescription:
       "Introduction to programming using Scratch and JavaScript.",
@@ -107,10 +112,10 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-04",
     updatedAt: "2025-12-10",
   },
-
   {
     _id: "65a7f1b2c9e77a0012a9c105",
     clubCategoryName: "Science Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "ELEMENTARY",
     clubDescription: "Fun science experiments and discovery learning.",
     clubTime: "10:30",
@@ -133,6 +138,7 @@ export const mockClubs: Club[] = [
   {
     _id: "65a7f1b2c9e77a0012a9c106",
     clubCategoryName: "Chess Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "HIGHSCHOOL",
     clubDescription: "Strategic thinking through competitive chess.",
     clubTime: "16:00",
@@ -151,10 +157,10 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-06",
     updatedAt: "2025-12-10",
   },
-
   {
     _id: "65a7f1b2c9e77a0012a9c107",
     clubCategoryName: "Music Club",
+    clubCategoryType: "ARTS",
     classCategoryName: "ELEMENTARY",
     clubDescription: "Learning basic instruments and rhythm.",
     clubTime: "09:00",
@@ -177,6 +183,7 @@ export const mockClubs: Club[] = [
   {
     _id: "65a7f1b2c9e77a0012a9c108",
     clubCategoryName: "English Speaking Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "MIDDLESCHOOL",
     clubDescription:
       "Improve speaking confidence through games and discussions.",
@@ -196,9 +203,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-08",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c109",
     clubCategoryName: "Drama Club",
+    clubCategoryType: "ARTS",
     classCategoryName: "HIGHSCHOOL",
     clubDescription: "Acting, stage performance, and public speaking.",
     clubTime: "17:00",
@@ -217,9 +226,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-08",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c110",
     clubCategoryName: "Basketball Club",
+    clubCategoryType: "SPORTS",
     classCategoryName: "MIDDLESCHOOL",
     clubDescription: "Teamwork and physical fitness through basketball.",
     clubTime: "16:30",
@@ -238,9 +249,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-09",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c111",
     clubCategoryName: "Photography Club",
+    clubCategoryType: "ARTS",
     classCategoryName: "HIGHSCHOOL",
     clubDescription: "Learn photography basics and photo editing.",
     clubTime: "14:30",
@@ -259,9 +272,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-09",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c112",
     clubCategoryName: "Debate Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "HIGHSCHOOL",
     clubDescription: "Critical thinking and debate competitions.",
     clubTime: "18:00",
@@ -280,9 +295,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-09",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c113",
     clubCategoryName: "Dance Club",
+    clubCategoryType: "ARTS",
     classCategoryName: "ELEMENTARY",
     clubDescription: "Fun dance routines and rhythm exercises.",
     clubTime: "13:00",
@@ -301,9 +318,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-10",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c114",
     clubCategoryName: "Astronomy Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "MIDDLESCHOOL",
     clubDescription: "Explore planets, stars, and space science.",
     clubTime: "19:00",
@@ -322,9 +341,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-10",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c115",
     clubCategoryName: "Cooking Club",
+    clubCategoryType: "FUN",
     classCategoryName: "ELEMENTARY",
     clubDescription: "Learn simple and healthy cooking skills.",
     clubTime: "11:30",
@@ -343,9 +364,11 @@ export const mockClubs: Club[] = [
     createdAt: "2025-12-10",
     updatedAt: "2025-12-10",
   },
+
   {
     _id: "65a7f1b2c9e77a0012a9c116",
     clubCategoryName: "Environmental Club",
+    clubCategoryType: "EDUCATION",
     classCategoryName: "HIGHSCHOOL",
     clubDescription: "Environmental awareness and eco projects.",
     clubTime: "15:30",
