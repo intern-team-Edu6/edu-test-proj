@@ -22,12 +22,16 @@ import {
 } from "@/components/ui/select";
 import Image from "next/image";
 import { Plus, Upload } from "lucide-react";
+import MapSelector from "@/components/main/MapSelector";
 
 const CLASS_CATEGORIES = ["SPORT", "ART", "SCIENCE", "LANGUAGE"];
 
 export default function InterestClubAdminPage() {
   const [open, setOpen] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
+
+  const [lat, setLat] = useState<number | null>(null);
+  const [lon, setLon] = useState<number | null>(null);
 
   const [form, setForm] = useState({
     clubCategoryName: "",
@@ -92,6 +96,17 @@ export default function InterestClubAdminPage() {
 
     alert("Амжилттай хадгалагдлаа");
     setOpen(false);
+  };
+
+  const handleLocationSelect = (newLat: number, newLon: number) => {
+    setLat(newLat);
+    setLon(newLon);
+
+    setForm((prev) => ({
+      ...prev,
+      lat: newLat,
+      lon: newLon,
+    }));
   };
 
   return (
@@ -200,15 +215,27 @@ export default function InterestClubAdminPage() {
             type="number"
             name="lat"
             placeholder="Latitude"
+            value={form.lat}
             onChange={handleChange}
           />
           <Input
             type="number"
             name="lon"
             placeholder="Longitude"
+            value={form.lon}
             onChange={handleChange}
           />
         </div>
+
+        <Label className="mt-4">Байршил сонгох</Label>
+
+        <MapSelector
+          lat={lat}
+          lng={lon}
+          setLat={setLat}
+          setLng={setLon}
+          onLocationSelect={handleLocationSelect}
+        />
 
         <hr />
 

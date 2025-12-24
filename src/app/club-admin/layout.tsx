@@ -14,16 +14,14 @@ export default function ClubAdminLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (!isLoaded) return;
-
-    const role = user?.publicMetadata?.role;
-
-    if (!user || role !== "admin") {
-      router.push("/");
-    }
+    // if (!isLoaded) return;
+    // const role = user?.publicMetadata?.role;
+    // if (!user || role !== "admin") {
+    //   router.push("/");
+    // }
   }, [isLoaded, user, router]);
 
-  if (!isLoaded || !user)
+  if (!isLoaded || user)
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <Spinner />
