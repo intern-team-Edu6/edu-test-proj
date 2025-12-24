@@ -8,21 +8,13 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import FilteredClubs from "./jamka/page";
 
-export default function HomePage() {
-  const { user, isSignedIn } = useUser();
-  const router = useRouter();
-  useEffect(() => {
-    if (user?.publicMetadata.role === "admin") {
-      router.push("/redirect");
-    }
-  }, []);
-  console.log("HomePage - User info:", user?.publicMetadata.role, isSignedIn);
-
+const HomePage = () => {
   return (
     <div className="h-screen w-full">
       <Header children={undefined} />
       <FilteredClubs />
-      {/* <Map /> */}
+      <Map />
     </div>
   );
-}
+};
+export default HomePage;
