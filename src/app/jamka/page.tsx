@@ -1,7 +1,8 @@
 "use client";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { useState, useMemo } from "react";
-import { mockClubs } from "@/lib/mock-data";
+import { Club, mockClubs } from "@/lib/mock-data";
+import Map from "../_components/Map";
 
 const FilteredClubs = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
@@ -68,7 +69,8 @@ const FilteredClubs = () => {
   ];
 
   // Filter clubs based on selected criteria
-  const filteredClubs = useMemo(() => {
+
+  const filteredClubs = useMemo<Club[]>(() => {
     let filtered = [...mockClubs];
 
     // Filter by class
@@ -489,6 +491,9 @@ const FilteredClubs = () => {
                 </div>
               )}
             </div>
+          </div>
+          <div className="mt-10">
+            {selectedClass ? <Map filteredClubs={filteredClubs} /> : ""}
           </div>
         </div>
       </section>

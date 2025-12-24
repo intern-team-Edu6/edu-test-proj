@@ -22,7 +22,7 @@ export default function HomePage() {
     <div className="h-screen w-full">
       <Header children={undefined} />
       <FilteredClubs />
-      <Map />
+      {/* <Map /> */}
     </div>
   );
 }
