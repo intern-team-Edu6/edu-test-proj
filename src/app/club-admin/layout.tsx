@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -11,21 +11,35 @@ export default function ClubAdminLayout({
   children: React.ReactNode;
 }) {
   const { user, isLoaded } = useUser();
+  const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
-    // if (!isLoaded) return;
-    // const role = user?.publicMetadata?.role;
-    // if (!user || role !== "admin") {
-    //   router.push("/");
-    // }
+    setLoading(true);
+    if (!isLoaded) return;
+
+    if (!user) {
+      router.push("/");
+      return;
+    }
+
+    const role = user.publicMetadata?.role;
+
+    if (role !== "admin") {
+      router.push("/");
+      return;
+    }
+
+    setLoading(false);
   }, [isLoaded, user, router]);
 
-  if (!isLoaded || user)
+  if (!isLoaded || loading) {
     return (
       <div className="w-full h-screen flex justify-center items-center">
         <Spinner />
       </div>
     );
-  return <div>{children}</div>;
+  }
+
+  return <>{children}</>;
 }

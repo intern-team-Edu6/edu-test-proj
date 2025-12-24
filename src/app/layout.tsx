@@ -30,13 +30,9 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <div className="w-full bg-blue-950">
-            <div className="max-w-\[1440px]\ mx-auto">
-              <Header />
-            </div>
-          </div>
+          <Header />
 
-          <div className="max-w-\[1440px]\ mx-auto">{children}</div>
+          <div className="max-w-\[1440px]\ m-auto">{children}</div>
         </body>
       </html>
     </ClerkProvider>

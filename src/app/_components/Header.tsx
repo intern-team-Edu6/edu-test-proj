@@ -13,20 +13,22 @@ export const Header = () => {
   const isAdmin = user?.publicMetadata?.role === "admin";
 
   return (
-    <header className="w-full h-20 bg-blue-950 text-white flex justify-between items-center px-10">
-      <div>LOGO</div>
+    <header className="bg-blue-950">
+      <div className=" h-20 flex justify-between items-center text-white px-10">
+        <div>LOGO</div>
 
-      <div className="flex gap-5">
-        {isAdmin && (
-          <Button
-            onClick={() => router.push("/club-admin/create-club")}
-            className="bg-orange-500 rounded-full cursor-pointer"
-          >
-            Дугуйлан Бүртгүүлэх
-          </Button>
-        )}
+        <div className="flex gap-5">
+          {isAdmin && (
+            <Button
+              onClick={() => router.push("/club-admin/create-club")}
+              className="bg-orange-500 rounded-full cursor-pointer"
+            >
+              Дугуйлан Бүртгүүлэх
+            </Button>
+          )}
 
-        <MyUserButton />
+          <MyUserButton />
+        </div>
       </div>
     </header>
   );
