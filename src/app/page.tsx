@@ -2,11 +2,11 @@
 
 import React from "react";
 import Map from "./_components/Map";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import Header from "./_components/Header";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
-import { Filter } from "lucide-react";
+import FilteredClubs from "./jamka/page";
 
 export default function HomePage() {
   const { user, isSignedIn } = useUser();
@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <div className="h-screen w-full">
       <Header children={undefined} />
-      <Filter />
+      <FilteredClubs />
       <Map />
     </div>
   );
