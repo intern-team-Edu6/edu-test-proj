@@ -1,5 +1,5 @@
-import JamkaPage from "@/components/jamka/page";
 import React from "react";
+import JamkaPage from "./jamka/page";
 
 const HomePage = () => {
   return (
