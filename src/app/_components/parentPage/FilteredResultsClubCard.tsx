@@ -95,11 +95,11 @@ const FilteredResultsClubCard = ({
                         </span>
                       </div>
 
-                      <p className="text-slate-600 text-sm mb-4 line-clamp-2">
+                      {/* <p className="text-slate-600 text-sm mb-4 line-clamp-2">
                         {club.clubDescription}
-                      </p>
+                      </p> */}
 
-                      <div className="grid grid-cols-2 gap-3 mb-4">
+                      <div className="flex justify-between gap-3 mb-4">
                         <div className="flex items-center gap-2 text-sm">
                           <Calendar className="w-4 h-4 text-orange-600" />
                           <span className="text-slate-700 font-medium">
@@ -116,7 +116,7 @@ const FilteredResultsClubCard = ({
 
                       <div className="border-t pt-4 mt-4">
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
+                          {/* <div className="flex items-center gap-3">
                             <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold">
                               {club.teacherName.charAt(0)}
                             </div>
@@ -128,7 +128,7 @@ const FilteredResultsClubCard = ({
                                 {club.teacherProfession}
                               </p>
                             </div>
-                          </div>
+                          </div> */}
                           <div className="text-right">
                             <p className="text-lg font-bold text-orange-600">
                               {club.clubPrice.toLocaleString()}₮
