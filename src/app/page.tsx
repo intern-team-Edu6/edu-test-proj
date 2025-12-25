@@ -5,6 +5,7 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import { FilteredClubs } from "./_components/parentPage";
+import Intro from "./_components/intro";
 
 const HomePage = () => {
   const { user, isLoaded } = useUser();
@@ -45,6 +46,7 @@ const HomePage = () => {
 
   return (
     <div className="w-full h-screen">
+      <Intro />
       <FilteredClubs />
     </div>
   );
