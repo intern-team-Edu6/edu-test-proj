@@ -1,6 +1,6 @@
 "use client";
 
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import { useRouter } from "next/navigation";
 import L from "leaflet";
 import { Club } from "@/lib/mock-data";
@@ -16,14 +16,35 @@ L.Icon.Default.mergeOptions({
 
 type Props = {
   clubs: Club[];
+  userLocation: [number, number] | null;
+  nearbyClubs: Club[];
+  selectedRadius: number;
 };
 
-export default function MapContent({ clubs }: Props) {
+export default function MapContent({
+  clubs,
+  userLocation,
+  nearbyClubs,
+  selectedRadius,
+}: Props) {
   const router = useRouter();
 
-  if (!clubs.length) return <p>No clubs to display on the map.</p>;
+  if (!clubs.length)
+    return (
+      <div className="m-auto shadow-lg rounded-2xl border-2 border-slate-200  h-50 w-287.5 flex justify-center items-center">
+        <p className="text-slate-500 text-lg">
+          Газрын зураг дээр харуулах клуб олдсонгүй
+        </p>
+      </div>
+    );
 
-  const center = [clubs[0].lat, clubs[0].lon] as [number, number];
+  const center: [number, number] = userLocation
+    ? userLocation
+    : nearbyClubs.length
+    ? [nearbyClubs[0].lat, nearbyClubs[0].lon]
+    : [clubs[0].lat, clubs[0].lon];
+
+  const displayClubs = nearbyClubs.length ? nearbyClubs : clubs;
 
   return (
     <div className="m-auto shadow-lg rounded-2xl border-2 border-slate-200 overflow-hidden h-150 w-288">
@@ -33,7 +54,21 @@ export default function MapContent({ clubs }: Props) {
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         />
 
-        {clubs.map((club) => (
+        {userLocation && (
+          <div>
+            <Marker position={userLocation}>
+              <Popup>Таны байршил</Popup>
+            </Marker>
+
+            <Circle
+              center={userLocation}
+              radius={selectedRadius * 1000}
+              pathOptions={{ color: "blue", fillOpacity: 0.1 }}
+            />
+          </div>
+        )}
+
+        {displayClubs.map((club) => (
           <Marker key={club._id} position={[club.lat, club.lon]}>
             <Popup>
               <div
