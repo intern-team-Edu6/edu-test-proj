@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useUser } from "@clerk/nextjs";
+import FilteredClubs from "./jamka/page";
+import { useAuth, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import { FilteredClubs } from "./_components/parentPage";
@@ -10,6 +11,7 @@ const HomePage = () => {
   const { user, isLoaded } = useUser();
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+  const { getToken } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -19,7 +21,18 @@ const HomePage = () => {
       router.push("/club-admin");
       return;
     }
+    async function createAndCheckUser() {
+      const token = await getToken();
 
+      await fetch("/api/create-check-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+    }
+    createAndCheckUser();
     setLoading(false);
   }, [isLoaded, user, router]);
 
