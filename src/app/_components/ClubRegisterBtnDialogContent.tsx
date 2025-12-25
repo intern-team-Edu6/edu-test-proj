@@ -4,6 +4,7 @@ import React, { ChangeEvent, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -15,6 +16,8 @@ import Image from "next/image";
 import { Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import MapSelector from "./main/MapSelector";
+import { toast } from "sonner";
+import { useAuth } from "@clerk/nextjs";
 
 const recommendedClubCategoryNames = [
   "SPORT",
@@ -95,7 +98,6 @@ export const ClubRegisterBtnDialogContent = () => {
   const [clubPrices, setClubPrices] = useState<Record<string, number>>({});
   const [clubImage, setClubImage] = useState<File | undefined>();
   const [clubImagePreview, setClubImagePreview] = useState<string>("");
-
   const [clubDescription, setClubDescription] = useState<string>("");
   const [selectedClubWorkingDays, setSelectedClubWorkingDays] = useState<
     string[]
@@ -106,6 +108,17 @@ export const ClubRegisterBtnDialogContent = () => {
   const [clubAddress, setClubAddress] = useState<string>("");
   const [clubLat, setClubLat] = useState<number | null>(null);
   const [clubLong, setClubLong] = useState<number | null>(null);
+
+  const [teacherImage, setTeacherImage] = useState<File | undefined>();
+  const [teacherImagePreview, setTeacherImagePreview] = useState<string>("");
+  const [teacherName, setTeacherName] = useState<string>("");
+  const [teacherPhone, setTeacherPhone] = useState<number>();
+  const [teacherEmail, setTeacherEmail] = useState<string>("");
+  const [teacherProfession, setTeacherProfession] = useState<string>("");
+  const [teacherExperience, setTeacherExperience] = useState<string>("");
+  const [teacherAchievement, setTeacherAchievement] = useState<string>("");
+  const { getToken } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleSelectedClubWorkingDays = (days: string[]) => {
     setSelectedClubWorkingDays(days);
@@ -129,7 +142,7 @@ export const ClubRegisterBtnDialogContent = () => {
     });
   };
 
-  const imageFileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const clubImageFileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setClubImage(e.target.files[0]);
       const filePreview = URL.createObjectURL(e.target.files[0]);
@@ -142,6 +155,81 @@ export const ClubRegisterBtnDialogContent = () => {
     setClubLong(lng);
   };
 
+  const teacherImageFileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setTeacherImage(e.target.files[0]);
+      const filePreview = URL.createObjectURL(e.target.files[0]);
+      setTeacherImagePreview(filePreview);
+    }
+  };
+
+  const handleSaveClubInfo = async () => {
+    const token = await getToken();
+
+    if (
+      !clubName ||
+      !clubCategoryName ||
+      !selectedClassLevelNames ||
+      !clubPrices ||
+      !clubImage ||
+      !clubDescription ||
+      !selectedClubWorkingDays ||
+      !scheduledClubTimes ||
+      !clubAddress ||
+      !clubLat ||
+      !clubLong ||
+      !teacherImage ||
+      !teacherName ||
+      !teacherPhone ||
+      !teacherEmail ||
+      !teacherProfession ||
+      !teacherExperience ||
+      !teacherAchievement ||
+      !token
+    ) {
+      toast.warning("All fields are required!");
+      return;
+    }
+
+    setLoading(true);
+    const newForm = new FormData();
+
+    newForm.append("clubName", clubName);
+    newForm.append("clubCategoryName", clubCategoryName);
+    newForm.append(
+      "selectedClassLevelNames",
+      JSON.stringify(selectedClassLevelNames)
+    );
+    newForm.append("clubPrices", JSON.stringify(clubPrices));
+    newForm.append("clubImage", clubImage as File);
+    newForm.append("clubDescription", clubDescription);
+    newForm.append(
+      "selectedClubWorkingDays",
+      JSON.stringify(selectedClubWorkingDays)
+    );
+    newForm.append("scheduledClubTimes", JSON.stringify(scheduledClubTimes));
+    newForm.append("clubAddress", clubAddress);
+    newForm.append("clubLat", String(clubLat));
+    newForm.append("clubLong", String(clubLong));
+    newForm.append("teacherImage", teacherImage as File);
+    newForm.append("teacherName", teacherName);
+    newForm.append("teacherPhone", String(teacherPhone));
+    newForm.append("teacherEmail", teacherEmail);
+    newForm.append("teacherProfession", teacherProfession);
+    newForm.append("teacherExperience", teacherExperience);
+    newForm.append("teacherAchievement", teacherAchievement);
+
+    await fetch("/api/create-club", {
+      method: "POST",
+      headers: {
+        Authorizaton: `Bearer ${token}`,
+      },
+      body: newForm,
+    });
+
+    setLoading(false);
+  };
+
   console.log({ clubName });
   console.log({ clubCategoryName });
   console.log({ selectedClassLevelNames });
@@ -151,18 +239,30 @@ export const ClubRegisterBtnDialogContent = () => {
   console.log({ clubDescription });
   console.log({ selectedClubWorkingDays });
   console.log({ scheduledClubTimes });
-  console.log({});
-  console.log({});
+  console.log({ clubAddress });
+  console.log({ clubLat });
+  console.log({ clubLong });
+  console.log({ teacherImage });
+  console.log({ teacherImagePreview });
+  console.log({ teacherName });
+  console.log({ teacherPhone });
+  console.log({ teacherEmail });
+  console.log({ teacherProfession });
+  console.log({ teacherExperience });
+  console.log({ teacherAchievement });
 
   return (
-    <DialogContent className="sm:max-w-230 max-h-[90vh] gap-10 overflow-y-auto">
+    <DialogContent className="sm:max-w-260 max-h-[90vh] gap-10 overflow-y-auto">
       <DialogHeader>
-        <DialogTitle>Дугуйлангийн мэдээлэл оруулах</DialogTitle>
+        <DialogTitle className="font-bold">Дугуйлан бүртгүүлэх</DialogTitle>
         <DialogDescription hidden />
       </DialogHeader>
 
-      <div className="flex gap-10">
-        <div className="w-110 flex flex-col gap-6">
+      <div className="flex justify-between">
+        <div className="w-125 flex flex-col gap-6">
+          <Label className="text-base font-semibold">
+            Дугуйлангийн мэдээлэл оруулах хэсэг:
+          </Label>
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="clubCategoryName">Ангилал:</Label>
             <Input
@@ -269,12 +369,12 @@ export const ClubRegisterBtnDialogContent = () => {
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="clubImage">Зураг:</Label>
             {clubImage ? (
-              <div className="w-full h-35 rounded-md border border-border border-dashed relative overflow-hidden">
+              <div className="w-full h-65 rounded-md border border-border border-dashed relative overflow-hidden">
                 <Image
                   src={clubImagePreview}
                   alt={"image preview"}
                   width={440}
-                  height={140}
+                  height={260}
                   className="object-cover w-full h-full"
                   unoptimized
                 />
@@ -288,11 +388,11 @@ export const ClubRegisterBtnDialogContent = () => {
                 </Button>
               </div>
             ) : (
-              <div className="w-full h-35 bg-gray-800/5 flex justify-center items-center p-4 rounded-md border border-border border-dashed relative">
+              <div className="w-full h-65 bg-gray-800/5 flex justify-center items-center p-4 rounded-md border border-border border-dashed relative">
                 <input
                   id="clubImage"
                   type="file"
-                  onChange={imageFileChangeHandler}
+                  onChange={clubImageFileChangeHandler}
                   className="absolute inset-0 opacity-0 cursor-pointer border"
                 />
                 <div className="flex flex-col justify-center items-center gap-2">
@@ -369,6 +469,7 @@ export const ClubRegisterBtnDialogContent = () => {
             <Input
               value={clubAddress}
               onChange={(e) => setClubAddress(e.target.value)}
+              placeholder="Дугуйлангийн хаягаа оруулна уу..."
             />
           </div>
 
@@ -400,8 +501,118 @@ export const ClubRegisterBtnDialogContent = () => {
           </div>
         </div>
 
-        <div className="w-110"></div>
+        <div className="w-100 flex flex-col gap-6">
+          <Label className="text-base font-semibold">
+            Багшийн мэдээлэд оруулах хэсэг:
+          </Label>
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="teacherImage">Багш зураг:</Label>
+            {teacherImage ? (
+              <div className="w-full h-55 rounded-md border border-border border-dashed relative overflow-hidden">
+                <Image
+                  src={teacherImagePreview}
+                  alt={"image preview"}
+                  width={440}
+                  height={220}
+                  className="object-cover w-full h-full"
+                  unoptimized
+                />
+                <Button
+                  type="button"
+                  variant={"secondary"}
+                  onClick={() => setTeacherImage(undefined)}
+                  className="absolute w-9 h-9 rounded-full right-1 top-1"
+                >
+                  <X />
+                </Button>
+              </div>
+            ) : (
+              <div className="w-full h-55 bg-gray-800/5 flex justify-center items-center p-4 rounded-md border border-border border-dashed relative">
+                <input
+                  id="teacherImage"
+                  type="file"
+                  onChange={teacherImageFileChangeHandler}
+                  className="absolute inset-0 opacity-0 cursor-pointer border"
+                />
+                <div className="flex flex-col justify-center items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-background flex justify-center items-center">
+                    <Upload className="text-muted-foreground" />
+                  </div>
+                  <Label className="text-muted-foreground">
+                    Choose a file or drag & drop it here
+                  </Label>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="teacherName">Багшийн нэр:</Label>
+            <Input
+              id="teacherName"
+              value={teacherName}
+              onChange={(e) => setTeacherName(e.target.value)}
+              placeholder="Багшийн нэрийг оруулна уу..."
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="teacherPhone">Утас:</Label>
+            <Input
+              id="teacherPhone"
+              type="number"
+              value={teacherPhone}
+              onChange={(e) => setTeacherPhone(Number(e.target.value))}
+              placeholder="Багшийн холбоо барих утсыг оруулна уу..."
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="teacherEmail">Имэйл:</Label>
+            <Input
+              id="teacherEmail"
+              value={teacherEmail}
+              onChange={(e) => setTeacherEmail(e.target.value)}
+              placeholder="Багшийн имэйл хаягийг оруулна уу..."
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="teacherProfession">Мэргэжил:</Label>
+            <Input
+              id="teacherProfession"
+              value={teacherProfession}
+              onChange={(e) => setTeacherProfession(e.target.value)}
+              placeholder="Багшийн мэргэжлийг оруулна уу..."
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="teacherExperience">Туршлага:</Label>
+            <Input
+              id="teacherExperience"
+              value={teacherExperience}
+              onChange={(e) => setTeacherExperience(e.target.value)}
+              placeholder="Багшийн туршлагыг оруулна уу..."
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="teacherAchievement">Гаргасан амжилт:</Label>
+            <Input
+              id="teacherAchievement"
+              value={teacherAchievement}
+              onChange={(e) => setTeacherAchievement(e.target.value)}
+              placeholder="Багшийн ололт амжилтыг оруулна уу..."
+            />
+          </div>
+        </div>
       </div>
+      <DialogFooter>
+        <Button onClick={handleSaveClubInfo} className="cursor-pointer">
+          Мэдээлэл хадгалах
+        </Button>
+      </DialogFooter>
     </DialogContent>
   );
 };
