@@ -1,8 +1,7 @@
 "use client";
-import { Calendar, Clock, MapPin } from "lucide-react";
+import { Calendar, Clock } from "lucide-react";
 import { useState, useMemo } from "react";
-import { Club, mockClubs } from "@/lib/mock-data";
-import Map from "../Map";
+import { mockClubs } from "@/lib/mock-data";
 import AllClubsCard from "./AllClubsCard";
 import FilteredResultsClubCard from "./FilteredResultsClubCard";
 
@@ -13,7 +12,6 @@ export const FilteredClubs = () => {
   const [selectedSport, setSelectedSport] = useState<string>("");
   const [selectedGenre, setSelectedGenre] = useState<string>("");
 
-  // Reset all filters
   const resetFilters = () => {
     setSelectedClass("");
     setSelectedDate("");
@@ -28,7 +26,6 @@ export const FilteredClubs = () => {
     { label: "Ахлах анги", value: "HIGHSCHOOL" },
   ];
 
-  // Map genre to clubCategoryType
   const genreTypeMap: Record<string, string> = {
     sports: "SPORTS",
     arts: "ARTS",
@@ -36,7 +33,6 @@ export const FilteredClubs = () => {
     entertainment: "FUN",
   };
 
-  // Map course names to club category names
   const courseNameMap: Record<string, string[]> = {
     Бөх: ["Wrestling Club"],
     Хөлбөмбөг: ["Football Club", "Soccer Club"],
@@ -70,44 +66,37 @@ export const FilteredClubs = () => {
     { label: "Орой", value: "evening", range: [18, 22] },
   ];
 
-  // Filter clubs based on selected criteria
   const filteredClubs = useMemo(() => {
     let filtered = [...mockClubs];
 
-    // Filter by class
     if (selectedClass) {
       filtered = filtered.filter(
         (club) => club.classCategoryName === selectedClass
       );
     }
 
-    // Filter by date
     if (selectedDate) {
       filtered = filtered.filter((club) =>
         club.clubWorkingDays.includes(selectedDate)
       );
     }
 
-    // Filter by time
     if (selectedTime) {
-      // Find the time range for the selected period
       const timeSlot = timeSlots.find((slot) => slot.value === selectedTime);
       if (timeSlot) {
         const [startHour, endHour] = timeSlot.range;
         filtered = filtered.filter((club) => {
-          const clubHour = parseInt(club.clubTime.split(":")[0]);
+          const clubHour = Number.parseInt(club.clubTime.split(":")[0]);
           return clubHour >= startHour && clubHour < endHour;
         });
       }
     }
 
-    // Filter by genre
     const genreType = genreTypeMap[selectedGenre];
     if (genreType) {
       filtered = filtered.filter((club) => club.clubCategoryType === genreType);
     }
 
-    // Filter by specific sport/course
     if (selectedSport) {
       const possibleNames = courseNameMap[selectedSport] || [selectedSport];
       filtered = filtered.filter((club) =>
@@ -150,7 +139,7 @@ export const FilteredClubs = () => {
       { name: "Робот", icon: "🤖" },
       { name: "Шатар", icon: "♟️" },
     ],
-    entertainment: [{ name: "Хүүхдийн тоглоом", icon: "�" }],
+    entertainment: [{ name: "Хүүхдийн тоглоом", icon: "🎯" }],
   };
 
   const genres = [
@@ -213,20 +202,24 @@ export const FilteredClubs = () => {
     selectedSport;
 
   return (
-    <div>
+    <div className="relative">
       {/* Sports Categories */}
-      <section id="sports" className="py-16 md:py-24">
+      <section id="sports" className="py-16 md:py-24 relative z-10">
         <div>
           <AllClubsCard />
         </div>
+
         <div className="container mx-auto px-4">
-          <div className="text-center mb-8">
+          <div className="text-center mb-8" data-scroll-point="search-title">
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
               Хичээл хайх
             </h2>
           </div>
-          <div className="flex justify-center mb-8">
-            <div className="inline-flex bg-white rounded-xl p-2 gap-2 border-2 border-slate-200 shadow-sm">
+          <div
+            className="flex justify-center mb-8"
+            data-scroll-point="class-selector"
+          >
+            <div className="inline-flex bg-white/50 rounded-xl p-2 gap-2 border-2 border-slate-200 shadow-sm">
               {classes.map((classItem) => (
                 <button
                   key={classItem.value}
@@ -243,8 +236,11 @@ export const FilteredClubs = () => {
             </div>
           </div>
 
-          <div className="mb-16 max-w-4xl mx-auto">
-            <div className="bg-white rounded-2xl p-8 border-2 border-slate-200 shadow-lg">
+          <div
+            className="mb-16 max-w-4xl mx-auto"
+            data-scroll-point="date-time"
+          >
+            <div className="bg-white/50 rounded-2xl p-8 border-2 border-slate-200 shadow-lg">
               <div className="flex items-center gap-3 mb-6">
                 <Calendar className="w-6 h-6 text-orange-600" />
                 <h3 className="text-2xl font-black text-navy-900">
@@ -318,7 +314,10 @@ export const FilteredClubs = () => {
           </div>
 
           {/* Genre Tabs */}
-          <div className="max-w-4xl mx-auto mb-8 flex justify-center">
+          <div
+            className="max-w-4xl mx-auto mb-8 flex justify-center"
+            data-scroll-point="genre"
+          >
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
               {genres.map((genre) => (
                 <button
@@ -327,7 +326,7 @@ export const FilteredClubs = () => {
                   className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold whitespace-nowrap transition-all duration-200 ${
                     selectedGenre === genre.id
                       ? "bg-orange-600 text-white shadow-lg"
-                      : "bg-white text-slate-700 border-2 border-slate-200 hover:border-orange-400"
+                      : "bg-white/50 text-slate-700 border-2 border-slate-200 hover:border-orange-400"
                   }`}
                 >
                   <span className="text-xl">{genre.icon}</span>
@@ -340,7 +339,7 @@ export const FilteredClubs = () => {
           {/* Courses List - Scrollable */}
           {selectedGenre && (
             <div className="max-w-6xl mx-auto mb-16">
-              <div className="bg-white rounded-2xl p-6 border-2 border-slate-200 shadow-lg">
+              <div className="bg-white/50 rounded-2xl p-6 border-2 border-slate-200 shadow-lg">
                 <h3 className="text-xl font-bold text-slate-900 mb-4">
                   {genres.find((g) => g.id === selectedGenre)?.label}
                 </h3>
@@ -354,7 +353,7 @@ export const FilteredClubs = () => {
                       className={`shrink-0 w-32 p-5 rounded-xl border-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg ${
                         selectedSport === item.name
                           ? "border-orange-500 bg-orange-50 shadow-md"
-                          : "border-slate-200 bg-white hover:border-orange-300"
+                          : "border-slate-200 /50 hover:border-orange-300"
                       }`}
                     >
                       <div className="flex flex-col items-center gap-2">
@@ -388,14 +387,12 @@ export const FilteredClubs = () => {
           )}
 
           {/* Filtered Results */}
-
-          <FilteredResultsClubCard
-            filteredClubs={filteredClubs}
-            resetFilters={resetFilters}
-            isFiltered={Boolean(isFiltered)}
-          />
-          <div className="mt-10">
-            {filteredClubs ? <Map filteredClubs={filteredClubs}></Map> : ""}
+          <div data-scroll-point="results">
+            <FilteredResultsClubCard
+              filteredClubs={filteredClubs}
+              resetFilters={resetFilters}
+              isFiltered={Boolean(isFiltered)}
+            />
           </div>
         </div>
       </section>
