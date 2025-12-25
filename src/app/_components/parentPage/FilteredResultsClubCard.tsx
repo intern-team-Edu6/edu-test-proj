@@ -1,6 +1,7 @@
 import { Club } from "@/lib/mock-data";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import React from "react";
+import Map from "../Map";
 
 type FilteredClubsCardProps = {
   filteredClubs: Club[];
@@ -16,19 +17,22 @@ const FilteredResultsClubCard = ({
   return (
     <div>
       <div className="mt-16 max-w-6xl mx-auto">
-        <div className="bg-white rounded-2xl p-8 border-2 border-slate-200 shadow-lg">
+        <div className="bg-white/50 rounded-2xl p-8 border-2 border-slate-200 shadow-lg">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <MapPin className="w-6 h-6 text-orange-600" />
               <h3 className="text-2xl font-black text-slate-900">Үр дүн</h3>
             </div>
-
-            <div className="text-sm text-slate-600">
-              <span className="font-bold text-orange-600 mr-1">
-                {filteredClubs.length}
-              </span>
-              клуб олдлоо
-            </div>
+            {isFiltered ? (
+              <div className="text-sm text-slate-600">
+                <span className="font-bold text-orange-600 mr-1">
+                  {filteredClubs.length}
+                </span>
+                клуб олдлоо
+              </div>
+            ) : (
+              ""
+            )}
           </div>
 
           {filteredClubs.length === 0 ? (
@@ -66,7 +70,6 @@ const FilteredResultsClubCard = ({
               </div>
             </div>
           ) : (
-            // <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ">
             <div className="flex flex-wrap justify-center gap-6 ">
               {!isFiltered ? (
                 <p className="text-center text-gray-500">Төрлөө сонгоно уу</p>
@@ -143,6 +146,11 @@ const FilteredResultsClubCard = ({
             </div>
           )}
         </div>
+        {isFiltered && (
+          <div className="mt-10" data-scroll-point="map">
+            <Map filteredClubs={filteredClubs} />
+          </div>
+        )}
       </div>
     </div>
   );
