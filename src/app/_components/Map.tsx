@@ -11,7 +11,7 @@ export default function Map({ filteredClubs }: { filteredClubs: Club[] }) {
   const [userLocation, setUserLocation] = useState<[number, number] | null>(
     null
   );
-  const RADIUS_STEPS = [0.5, 1, 2, 3];
+  const RADIUS_STEPS = [0.5, 1, 2, 3, 10];
   const [selectedRadius, setSelectedRadius] = useState<number>(0.5);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function Map({ filteredClubs }: { filteredClubs: Club[] }) {
                 : "text-slate-600"
             }`}
           >
-            {r < 1 ? `${r * 1000}m` : `${r}km`}
+            {r < 1 ? `${r * 1000}m` : `${r}km` || (r > 3 && `${r}km `)}
           </Button>
         ))}
       </div>
@@ -87,7 +87,6 @@ export default function Map({ filteredClubs }: { filteredClubs: Club[] }) {
         nearbyClubs={nearbyClubs}
         selectedRadius={selectedRadius}
       />
-      ;
     </div>
   );
 }

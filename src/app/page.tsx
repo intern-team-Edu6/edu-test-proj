@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import FilteredClubs from "./jamka/page";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
+import { FilteredClubs } from "./_components/parentPage";
 
 const HomePage = () => {
   const { user, isLoaded } = useUser();
