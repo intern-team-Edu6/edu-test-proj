@@ -1,7 +1,7 @@
 import connectDB from "@/lib/mongodb";
 import { verifyToken } from "@clerk/backend";
 import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function checkAuth() {
   const headersList = await headers();
@@ -22,6 +22,10 @@ export async function checkAuth() {
     console.error(e);
     return false;
   }
+}
+
+export async function GET(req: NextRequest) {
+  const res = req.json();
 }
 
 export const POST = async () => {

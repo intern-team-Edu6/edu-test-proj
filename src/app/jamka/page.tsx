@@ -3,6 +3,7 @@ import { Calendar, Clock, MapPin } from "lucide-react";
 import { useState, useMemo } from "react";
 import { mockClubs } from "@/lib/mock-data";
 import Map from "../_components/Map";
+import Link from "next/link";
 
 const FilteredClubs = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
@@ -422,70 +423,73 @@ const FilteredClubs = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {filteredClubs.map((club) => (
-                    <div
+                    <Link
                       key={club._id}
-                      className="border-2 border-slate-200 rounded-xl p-6 hover:border-orange-400 hover:shadow-lg transition-all duration-300"
+                      href={`/club/${club._id}`}
+                      className="block"
                     >
-                      <div className="flex justify-between items-start mb-4">
-                        <div>
-                          <h4 className="text-xl font-bold text-slate-900 mb-2">
-                            {club.clubCategoryName}
-                          </h4>
-                          <div className="flex items-center gap-2 text-sm text-slate-600">
-                            <MapPin className="w-4 h-4" />
-                            <span>{club.clubAddress}</span>
+                      <div className="border-2 border-slate-200 rounded-xl p-6 hover:border-orange-400 hover:shadow-lg transition-all duration-300">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h4 className="text-xl font-bold text-slate-900 mb-2">
+                              {club.clubCategoryName}
+                            </h4>
+                            <div className="flex items-center gap-2 text-sm text-slate-600">
+                              <MapPin className="w-4 h-4" />
+                              <span>{club.clubAddress}</span>
+                            </div>
+                          </div>
+                          <span className="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-full">
+                            {club.clubCategoryType}
+                          </span>
+                        </div>
+
+                        <p className="text-slate-600 text-sm mb-4 line-clamp-2">
+                          {club.clubDescription}
+                        </p>
+
+                        <div className="grid grid-cols-2 gap-3 mb-4">
+                          <div className="flex items-center gap-2 text-sm">
+                            <Calendar className="w-4 h-4 text-orange-600" />
+                            <span className="text-slate-700 font-medium">
+                              {club.clubWorkingDays.join(", ")}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm">
+                            <Clock className="w-4 h-4 text-orange-600" />
+                            <span className="text-slate-700 font-medium">
+                              {club.clubTime}
+                            </span>
                           </div>
                         </div>
-                        <span className="px-3 py-1 bg-orange-100 text-orange-700 text-xs font-bold rounded-full">
-                          {club.clubCategoryType}
-                        </span>
-                      </div>
 
-                      <p className="text-slate-600 text-sm mb-4 line-clamp-2">
-                        {club.clubDescription}
-                      </p>
-
-                      <div className="grid grid-cols-2 gap-3 mb-4">
-                        <div className="flex items-center gap-2 text-sm">
-                          <Calendar className="w-4 h-4 text-orange-600" />
-                          <span className="text-slate-700 font-medium">
-                            {club.clubWorkingDays.join(", ")}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <Clock className="w-4 h-4 text-orange-600" />
-                          <span className="text-slate-700 font-medium">
-                            {club.clubTime}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="border-t pt-4 mt-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold">
-                              {club.teacherName.charAt(0)}
+                        <div className="border-t pt-4 mt-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold">
+                                {club.teacherName.charAt(0)}
+                              </div>
+                              <div>
+                                <p className="text-sm font-semibold text-slate-900">
+                                  {club.teacherName}
+                                </p>
+                                <p className="text-xs text-slate-500">
+                                  {club.teacherProfession}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <p className="text-sm font-semibold text-slate-900">
-                                {club.teacherName}
+                            <div className="text-right">
+                              <p className="text-lg font-bold text-orange-600">
+                                {club.clubPrice.toLocaleString()}₮
                               </p>
                               <p className="text-xs text-slate-500">
-                                {club.teacherProfession}
+                                {club.classCategoryName}
                               </p>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-lg font-bold text-orange-600">
-                              {club.clubPrice.toLocaleString()}₮
-                            </p>
-                            <p className="text-xs text-slate-500">
-                              {club.classCategoryName}
-                            </p>
-                          </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               )}
