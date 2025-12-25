@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Map from "./_components/Map";
 import FilteredClubs from "./jamka/page";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
@@ -35,7 +34,6 @@ const HomePage = () => {
   return (
     <div className="w-full h-screen">
       <FilteredClubs />
-      <Map />
     </div>
   );
 };

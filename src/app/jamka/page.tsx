@@ -2,6 +2,7 @@
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { useState, useMemo } from "react";
 import { mockClubs } from "@/lib/mock-data";
+import Map from "../_components/Map";
 
 const FilteredClubs = () => {
   const [selectedClass, setSelectedClass] = useState<string>("");
@@ -489,6 +490,9 @@ const FilteredClubs = () => {
                 </div>
               )}
             </div>
+          </div>
+          <div className="mt-10">
+            {filteredClubs ? <Map filteredClubs={filteredClubs}></Map> : ""}
           </div>
         </div>
       </section>
