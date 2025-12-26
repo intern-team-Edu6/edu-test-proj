@@ -1,0 +1,21 @@
+export type NewClubType = {
+  _id?: string;
+  clubName: string;
+  clubCategoryName: string;
+  selectedClassLevelNames: string[];
+  clubPrices: number[];
+  clubImage: string;
+  clubDescription: string;
+  selectedClubWorkingDays: string[];
+  scheduledClubTimes: string[];
+  clubAddress: string;
+  clubLat: number;
+  clubLong: number;
+  teacherImage: string;
+  teacherName: string;
+  teacherPhone: string;
+  teacherEmail: string;
+  teacherProfession: string;
+  teacherExperience: string;
+  teacherAchievement: string;
+};

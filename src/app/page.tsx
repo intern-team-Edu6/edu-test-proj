@@ -7,41 +7,41 @@ import { Spinner } from "@/components/ui/spinner";
 import { FilteredClubs } from "./_components/parentPage";
 
 const HomePage = () => {
-  const { user, isLoaded } = useUser();
-  const [loading, setLoading] = useState<boolean>(false);
-  const router = useRouter();
-  const { getToken } = useAuth();
+  // const { user, isLoaded } = useUser();
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const router = useRouter();
+  // const { getToken } = useAuth();
 
-  useEffect(() => {
-    setLoading(true);
-    if (!isLoaded) return;
+  // useEffect(() => {
+  //   setLoading(true);
+  //   if (!isLoaded) return;
 
-    if (user?.publicMetadata?.role === "admin") {
-      router.push("/club-admin");
-      return;
-    }
-    async function createAndCheckUser() {
-      const token = await getToken();
+  //   if (user?.publicMetadata?.role === "admin") {
+  //     router.push("/club-admin");
+  //     return;
+  //   }
+  //   async function createAndCheckUser() {
+  //     const token = await getToken();
 
-      await fetch("/api/create-check-user", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    }
-    createAndCheckUser();
-    setLoading(false);
-  }, [isLoaded, user, router]);
+  //     await fetch("/api/create-check-user", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     });
+  //   }
+  //   createAndCheckUser();
+  //   setLoading(false);
+  // }, [isLoaded, user, router]);
 
-  if (!isLoaded || loading) {
-    return (
-      <div className="w-full h-screen flex justify-center items-center">
-        <Spinner />
-      </div>
-    );
-  }
+  // if (!isLoaded || loading) {
+  //   return (
+  //     <div className="w-full h-screen flex justify-center items-center">
+  //       <Spinner />
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="w-full h-screen">

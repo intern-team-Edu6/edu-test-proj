@@ -117,7 +117,7 @@ export const ClubRegisterBtnDialogContent = () => {
   const [teacherProfession, setTeacherProfession] = useState<string>("");
   const [teacherExperience, setTeacherExperience] = useState<string>("");
   const [teacherAchievement, setTeacherAchievement] = useState<string>("");
-  const { getToken } = useAuth();
+  // const { getToken } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleSelectedClubWorkingDays = (days: string[]) => {
@@ -164,7 +164,7 @@ export const ClubRegisterBtnDialogContent = () => {
   };
 
   const handleSaveClubInfo = async () => {
-    const token = await getToken();
+    // const token = await getToken();
 
     if (
       !clubName ||
@@ -184,8 +184,8 @@ export const ClubRegisterBtnDialogContent = () => {
       !teacherEmail ||
       !teacherProfession ||
       !teacherExperience ||
-      !teacherAchievement ||
-      !token
+      !teacherAchievement
+      // !token
     ) {
       toast.warning("All fields are required!");
       return;
@@ -221,9 +221,6 @@ export const ClubRegisterBtnDialogContent = () => {
 
     await fetch("/api/create-club", {
       method: "POST",
-      headers: {
-        Authorizaton: `Bearer ${token}`,
-      },
       body: newForm,
     });
 
@@ -359,7 +356,6 @@ export const ClubRegisterBtnDialogContent = () => {
             <Label htmlFor="clubDescription">Товч танилцуулга:</Label>
             <Textarea
               id="clubDescription"
-              className="min-h-18"
               value={clubDescription}
               onChange={(e) => setClubDescription(e.target.value)}
               placeholder="Дугуйлангийн товч танилцуулгыг оруулна уу..."
@@ -589,7 +585,7 @@ export const ClubRegisterBtnDialogContent = () => {
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="teacherExperience">Туршлага:</Label>
-            <Input
+            <Textarea
               id="teacherExperience"
               value={teacherExperience}
               onChange={(e) => setTeacherExperience(e.target.value)}
@@ -599,7 +595,7 @@ export const ClubRegisterBtnDialogContent = () => {
 
           <div className="flex flex-col gap-1.5">
             <Label htmlFor="teacherAchievement">Гаргасан амжилт:</Label>
-            <Input
+            <Textarea
               id="teacherAchievement"
               value={teacherAchievement}
               onChange={(e) => setTeacherAchievement(e.target.value)}
