@@ -1,15 +1,38 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion, Variants } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, Variants, useMotionValue, useSpring } from "framer-motion";
 import { BookOpen, GraduationCap, Users } from "lucide-react";
 
 export default function Intro() {
   const [isVisible, setIsVisible] = useState(false);
+  const [trail, setTrail] = useState<{ x: number; y: number }[]>([]);
+  const cursorX = useMotionValue(0);
+  const cursorY = useMotionValue(0);
+
+  const springConfig = { damping: 25, stiffness: 150 };
+  const cursorXSpring = useSpring(cursorX, springConfig);
+  const cursorYSpring = useSpring(cursorY, springConfig);
 
   useEffect(() => {
     setIsVisible(true);
-  }, []);
+
+    const handleMouseMove = (e: MouseEvent) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+
+      setTrail((prevTrail) => {
+        const newTrail = [
+          { x: e.clientX, y: e.clientY },
+          ...prevTrail.slice(0, 19), // Keep last 20 positions
+        ];
+        return newTrail;
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [cursorX, cursorY]);
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -62,7 +85,39 @@ export default function Intro() {
   ];
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-orange-50 via-white to-purple-50">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-orange-50 via-white to-purple-50 cursor-none">
+      {/* Snake Trail Following Cursor */}
+      <div className="fixed inset-0 pointer-events-none z-50">
+        {trail.map((point, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{
+              opacity: 1 - index * 0.05,
+              scale: 1 - index * 0.03,
+            }}
+            transition={{ duration: 0.3 }}
+            style={{
+              position: "absolute",
+              left: point.x - 8,
+              top: point.y - 8,
+              width: 16,
+              height: 16,
+              borderRadius: "50%",
+              background: `linear-gradient(135deg, 
+                ${
+                  index % 3 === 0
+                    ? "#F59E0B"
+                    : index % 3 === 1
+                    ? "#A855F7"
+                    : "#EC4899"
+                })`,
+              boxShadow: "0 0 10px rgba(245, 158, 11, 0.5)",
+            }}
+          />
+        ))}
+      </div>
+
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Gradient Blobs */}
@@ -128,11 +183,11 @@ export default function Intro() {
           </motion.div>
         </motion.div>
 
-        {/* Floating Pencil */}
-        <motion.div className="absolute top-[35%] left-[8%] text-5xl">
+        {/* trophy */}
+        <motion.div className="absolute top-[35%] left-[26%] text-5xl">
           <motion.div
-            initial={{ x: -300 }}
-            animate={{ x: 0 }}
+            initial={{ x: -300, y: -100 }}
+            animate={{ x: 0, y: 0 }}
             transition={{ duration: 1.8, ease: "easeOut" }}
           >
             <motion.div
@@ -147,12 +202,12 @@ export default function Intro() {
                 delay: 2,
               }}
             >
-              ✏️
+              🏆
             </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Genre Icons - Arts */}
+        {/*  Arts */}
         <motion.div className="absolute top-[50%] right-[12%] text-6xl">
           <motion.div
             initial={{ x: 300 }}
@@ -172,16 +227,16 @@ export default function Intro() {
                 delay: 2.2,
               }}
             >
-              🎨
+              🎭
             </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Genre Icons - Entertainment/Gaming */}
-        <motion.div className="absolute bottom-1/3 right-1/5 text-6xl">
+        {/* bag */}
+        <motion.div className="absolute top-[5%] left-[30%] text-6xl">
           <motion.div
-            initial={{ y: 300 }}
-            animate={{ y: 0 }}
+            initial={{ y: -300, x: -200 }}
+            animate={{ y: 0, x: 0 }}
             transition={{ duration: 2.2, ease: "easeOut" }}
           >
             <motion.div
@@ -196,16 +251,16 @@ export default function Intro() {
                 delay: 2.5,
               }}
             >
-              🎮
+              🎒
             </motion.div>
           </motion.div>
         </motion.div>
 
         {/* Genre Icons - Sports */}
-        <motion.div className="absolute top-[25%] left-[25%] text-6xl">
+        <motion.div className="absolute top-[30%] right-[30%] text-6xl">
           <motion.div
-            initial={{ y: -300 }}
-            animate={{ y: 0 }}
+            initial={{ y: -300, x: 200 }}
+            animate={{ y: 0, x: 0 }}
             transition={{ duration: 1.6, ease: "easeOut" }}
           >
             <motion.div
@@ -225,8 +280,8 @@ export default function Intro() {
           </motion.div>
         </motion.div>
 
-        {/* Genre Icons - Education */}
-        <motion.div className="absolute bottom-[25%] left-[15%] text-6xl">
+        {/* book */}
+        <motion.div className="absolute bottom-[15%] left-[35%] text-6xl">
           <motion.div
             initial={{ x: -300, y: 300 }}
             animate={{ x: 0, y: 0 }}
@@ -244,7 +299,258 @@ export default function Intro() {
                 delay: 2.3,
               }}
             >
-              📚
+              📙
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        {/* Pushpin */}
+        <motion.div className="absolute bottom-[15%] right-[35%] text-5xl">
+          <motion.div
+            initial={{ x: 200, y: 200 }}
+            animate={{ x: 0, y: 0 }}
+            transition={{ duration: 1.7, ease: "easeOut" }}
+          >
+            <motion.div
+              animate={{
+                rotate: [0, 15, -15, 0],
+                y: [0, -20, 0],
+              }}
+              transition={{
+                duration: 3.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2.4,
+              }}
+            >
+              📌
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        {/* Brain */}
+        <motion.div className="absolute bottom-[15%] right-[15%] text-6xl">
+          <motion.div
+            initial={{ x: 300, y: 200 }}
+            animate={{ x: 0, y: 0 }}
+            transition={{ duration: 2, ease: "easeOut" }}
+          >
+            <motion.div
+              animate={{
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0],
+              }}
+              transition={{
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2.7,
+              }}
+            >
+              🧠
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        {/* Climbing */}
+        <motion.div className="absolute top-[20%] left-1/2 -translate-x-1/2 text-6xl">
+          <motion.div
+            initial={{ y: -300, x: 0 }}
+            animate={{ y: 0, x: 0 }}
+            transition={{ duration: 2.2, ease: "easeOut" }}
+          >
+            <motion.div
+              animate={{
+                y: [0, -30, 0],
+                x: [0, 10, 0],
+              }}
+              transition={{
+                duration: 4.5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 2.8,
+              }}
+            >
+              🧗
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        {/* Decorative Spiral */}
+        <motion.div className="fixed top-[70%] left-[4%] -translate-y-1/2 z-20">
+          <motion.div
+            initial={{ x: -300, y: 0 }}
+            animate={{ x: 0, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <motion.div
+              animate={{
+                rotate: [0, 360],
+                scale: [1, 1.15, 1],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                ease: "linear",
+                delay: 0.5,
+              }}
+            >
+              <svg
+                width="400"
+                height="400"
+                viewBox="0 0 200 200"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="opacity-70"
+              >
+                {/* Outer circle - Purple */}
+                <motion.path
+                  d="M100 100C100 85 108 70 122 62C136 54 152 54 166 62C180 70 188 85 188 100C188 115 180 130 166 138C152 146 136 146 122 138C108 130 100 115 100 100"
+                  stroke="#A855F7"
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 1, 1, 1, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                    times: [0, 0.25, 0.5, 0.7, 1],
+                  }}
+                />
+                {/* Middle circle - Orange */}
+                <motion.path
+                  d="M100 100C100 92 104 84 112 79C120 74 130 74 138 79C146 84 150 92 150 100C150 108 146 116 138 121C130 126 120 126 112 121C104 116 100 108 100 100"
+                  stroke="#F59E0B"
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 0, 1, 1, 1, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                    times: [0, 0.25, 0.5, 0.7, 0.85, 1],
+                  }}
+                />
+                {/* Inner circle - Pink */}
+                <motion.path
+                  d="M100 100C100 96 102 92 106 90C110 88 114 88 118 90C122 92 124 96 124 100C124 104 122 108 118 110C114 112 110 112 106 110C102 108 100 104 100 100"
+                  stroke="#EC4899"
+                  strokeWidth="10"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 0, 0, 1, 1, 1, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                    times: [0, 0.25, 0.5, 0.75, 0.85, 0.95, 1],
+                  }}
+                />
+              </svg>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+
+        {/* Decorative Rainbow */}
+        <motion.div className="fixed top-[20%] right-[10%] z-20">
+          <motion.div
+            initial={{ y: -300, scale: 0.5 }}
+            animate={{ y: 0, scale: 1 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          >
+            <motion.div
+              animate={{
+                y: [0, -25, 0],
+                rotate: [0, 5, 0, -5, 0],
+              }}
+              transition={{
+                duration: 5,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: 0.5,
+              }}
+            >
+              <svg
+                width="160"
+                height="120"
+                viewBox="0 0 250 180"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="opacity-80"
+              >
+                <motion.path
+                  d="M40 160C40 160 70 20 125 20C180 20 210 160 210 160"
+                  stroke="#86EFAC"
+                  strokeWidth="20"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 1, 1, 1, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                    times: [0, 0.2, 0.5, 0.7, 1],
+                  }}
+                />
+                <motion.path
+                  d="M55 150C55 150 80 40 125 40C170 40 195 150 195 150"
+                  stroke="#EF4444"
+                  strokeWidth="18"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 0, 1, 1, 1, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                    times: [0, 0.2, 0.4, 0.5, 0.7, 1],
+                  }}
+                />
+                <motion.path
+                  d="M70 140C70 140 90 60 125 60C160 60 180 140 180 140"
+                  stroke="#FBBF24"
+                  strokeWidth="16"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 0, 0, 1, 1, 1, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                    times: [0, 0.2, 0.4, 0.6, 0.7, 0.8, 1],
+                  }}
+                />
+                <motion.path
+                  d="M85 130C85 130 100 80 125 80C150 80 165 130 165 130"
+                  stroke="#60A5FA"
+                  strokeWidth="14"
+                  strokeLinecap="round"
+                  fill="none"
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: [0, 0, 0, 0, 1, 1, 1, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: 0.5,
+                    times: [0, 0.2, 0.4, 0.6, 0.8, 0.9, 0.95, 1],
+                  }}
+                />
+              </svg>
             </motion.div>
           </motion.div>
         </motion.div>
@@ -285,47 +591,6 @@ export default function Intro() {
           Таны хүүхдийн авьяас, амжилтыг хамтдаа хөгжүүлье
         </motion.p>
 
-        <motion.p
-          variants={itemVariants}
-          className="text-lg md:text-xl text-slate-500 mb-12 max-w-2xl mx-auto"
-        >
-          Хүүхдийнхээ ирээдүйг бид хамтдаа бүтээе
-        </motion.p>
-
-        {/* CTA Button */}
-        <motion.div variants={itemVariants} className="mb-16">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="group relative px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white text-lg font-bold rounded-full shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
-          >
-            <motion.span
-              animate={{
-                x: ["-100%", "100%"],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-20"
-            />
-            <span className="relative z-10 flex items-center gap-2">
-              Хичээл сонгох
-              <motion.span
-                animate={{ x: [0, 5, 0] }}
-                transition={{
-                  duration: 1.5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                →
-              </motion.span>
-            </span>
-          </motion.button>
-        </motion.div>
-
         {/* Features */}
         <motion.div
           variants={containerVariants}
@@ -365,7 +630,7 @@ export default function Intro() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
-          className="absolute  left-1/2 -translate-x-1/2"
+          className="absolute -bottom-50 left-1/2 -translate-x-1/2"
         >
           <motion.div
             animate={{ y: [0, 10, 0] }}
@@ -374,7 +639,7 @@ export default function Intro() {
               repeat: Infinity,
               ease: "easeInOut",
             }}
-            className="flex flex-col items-center gap-2 text-slate-400"
+            className="flex flex-col items-center gap-2 text-black-400"
           >
             <span className="text-sm font-medium">Доош гүйлгэх</span>
             <svg

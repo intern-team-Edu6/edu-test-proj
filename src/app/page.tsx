@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Spinner } from "@/components/ui/spinner";
 import { FilteredClubs } from "./_components/parentPage";
 import Intro from "./_components/intro";
+import AllClubsCard from "./_components/parentPage/AllClubsCard";
 
 const HomePage = () => {
   const { user, isLoaded } = useUser();
@@ -47,6 +48,7 @@ const HomePage = () => {
   return (
     <div className="w-full h-screen">
       <Intro />
+      <AllClubsCard />
       <FilteredClubs />
     </div>
   );
