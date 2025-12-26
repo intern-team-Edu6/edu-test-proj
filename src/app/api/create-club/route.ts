@@ -1,5 +1,12 @@
 import connectDB from "@/lib/mongodb";
-import { NewClubType } from "@/lib/utils/types";
+import { createNewClub } from "@/lib/services/club-service";
+import {
+  ClassLevelsType,
+  ClubPricesType,
+  NewClubType,
+  ScheduledClubTimesType,
+  WeekDayType,
+} from "@/lib/utils/types";
 import { uploadImageToCloudinary } from "@/lib/utils/uploadImage";
 import { verifyToken } from "@clerk/backend";
 import { error } from "console";
@@ -16,42 +23,54 @@ export async function POST(req: NextRequest) {
     // }
     // const { userClerkId, role } = result;
 
-    const formNewData = await req.formData();
+    const newFormData = await req.formData();
 
-    const clubName = formNewData.get("clubName") as string;
-    const clubCategoryName = formNewData.get("clubCategoryName") as string;
+    const clubName = newFormData.get("clubName")?.toString();
+    const clubCategoryName = newFormData.get("clubCategoryName")?.toString();
 
-    const selectedClassLevelNames = formNewData.get(
-      "selectedClassLevelNames"
-    ) as string;
+    const selectedClassLevelNames = JSON.parse(
+      newFormData.get("selectedClassLevelNames")?.toString() || "[]"
+    ) as ClassLevelsType[];
 
-    const clubPrices = formNewData.get("clubPrices") as string;
-    const clubImage = formNewData.get("clubImage") as File;
-    const clubDescription = formNewData.get("clubDescription") as string;
-    const selectedClubWorkingDays = formNewData.get(
-      "selectedClubWorkingDays"
-    ) as string;
-    const scheduledClubTimes = formNewData.get("scheduledClubTimes") as string;
-    const clubAddress = formNewData.get("clubAddress") as string;
-    const clubLat = formNewData.get("clubLat") as string;
-    const clubLong = formNewData.get("clubLong") as string;
-    const teacherImage = formNewData.get("teacherImage") as File;
-    const teacherName = formNewData.get("teacherName") as string;
-    const teacherPhone = formNewData.get("teacherPhone") as string;
-    const teacherEmail = formNewData.get("teacherEmail") as string;
-    const teacherProfession = formNewData.get("teacherProfession") as string;
-    const teacherExperience = formNewData.get("teacherExperience") as string;
-    const teacherAchievement = formNewData.get("teacherAchievement") as string;
+    const clubPricesRaw = JSON.parse(
+      newFormData.get("clubPrices")?.toString() || "{}"
+    ) as ClubPricesType;
+
+    const clubImage = newFormData.get("clubImage") as File | null;
+    const clubDescription = newFormData.get("clubDescription")?.toString();
+
+    const selectedClubWorkingDays = JSON.parse(
+      newFormData.get("selectedClubWorkingDays")?.toString() || "[]"
+    ) as WeekDayType[];
+
+    const scheduledClubTimesRaw = JSON.parse(
+      newFormData.get("scheduledClubTimes")?.toString() || "{}"
+    ) as ScheduledClubTimesType;
+
+    const clubAddress = newFormData.get("clubAddress")?.toString();
+    const clubLat = parseFloat(newFormData.get("clubLat")?.toString() || "NaN");
+    const clubLong = parseFloat(
+      newFormData.get("clubLong")?.toString() || "NaN"
+    );
+    const teacherImage = newFormData.get("teacherImage") as File | null;
+    const teacherName = newFormData.get("teacherName")?.toString();
+    const teacherPhone = newFormData.get("teacherPhone")?.toString();
+    const teacherEmail = newFormData.get("teacherEmail")?.toString();
+    const teacherProfession = newFormData.get("teacherProfession")?.toString();
+    const teacherExperience = newFormData.get("teacherExperience")?.toString();
+    const teacherAchievement = newFormData
+      .get("teacherAchievement")
+      ?.toString();
 
     console.log({
       clubName,
       clubCategoryName,
       selectedClassLevelNames,
-      clubPrices,
+      clubPricesRaw,
       clubImage,
       clubDescription,
       selectedClubWorkingDays,
-      scheduledClubTimes,
+      scheduledClubTimesRaw,
       clubAddress,
       clubLat,
       clubLong,
@@ -67,15 +86,15 @@ export async function POST(req: NextRequest) {
     if (
       !clubName ||
       !clubCategoryName ||
-      !selectedClassLevelNames ||
-      !clubPrices ||
+      selectedClassLevelNames.length === 0 ||
+      Object.keys(clubPricesRaw).length === 0 ||
       !clubImage ||
       !clubDescription ||
-      !selectedClubWorkingDays ||
-      !scheduledClubTimes ||
+      selectedClubWorkingDays.length === 0 ||
+      Object.keys(scheduledClubTimesRaw).length === 0 ||
       !clubAddress ||
-      !clubLat ||
-      !clubLong ||
+      isNaN(clubLat) ||
+      isNaN(clubLong) ||
       !teacherImage ||
       !teacherName ||
       !teacherPhone ||
@@ -99,19 +118,21 @@ export async function POST(req: NextRequest) {
     if (teacherImage) {
       teacherImageUrl = await uploadImageToCloudinary(teacherImage);
     }
+    // const clubPrices = new Map(Object.entries(clubPricesRaw));
+    // const scheduledClubTimes = new Map(Object.entries(scheduledClubTimesRaw));
 
     const newClubData: NewClubType = {
       clubName,
       clubCategoryName,
       selectedClassLevelNames,
-      clubPrices: parseFloat(clubPrices),
+      clubPrices: clubPricesRaw,
       clubImage: clubImageUrl,
       clubDescription,
       selectedClubWorkingDays,
-      scheduledClubTimes,
+      scheduledClubTimes: scheduledClubTimesRaw,
       clubAddress,
-      clubLat: parseFloat(clubLat),
-      clubLong: parseFloat(clubLong),
+      clubLat,
+      clubLong,
       teacherImage: teacherImageUrl,
       teacherName,
       teacherPhone,
@@ -128,10 +149,10 @@ export async function POST(req: NextRequest) {
       { status: 200 }
     );
   } catch (error) {
-    console.error("Error while", error);
+    console.error("Error while saving club info", error);
     return NextResponse.json(
       {
-        message: "Failed to process new food data",
+        message: "Failed to save club info",
       },
       { status: 500 }
     );

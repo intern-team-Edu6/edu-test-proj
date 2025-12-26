@@ -18,6 +18,12 @@ import { Button } from "@/components/ui/button";
 import MapSelector from "./main/MapSelector";
 import { toast } from "sonner";
 import { useAuth } from "@clerk/nextjs";
+import {
+  ClassLevelsType,
+  ClubPricesType,
+  ScheduledClubTimesType,
+  WeekDayType,
+} from "@/lib/utils/types";
 
 const recommendedClubCategoryNames = [
   "SPORT",
@@ -77,9 +83,9 @@ const recommendedClubNames: Record<string, string[]> = {
     "Mobile App Development Club",
   ],
 };
-const classLevels = ["Elementary", "Middle", "High"];
+const classLevels: ClassLevelsType[] = ["Elementary", "Middle", "High"];
 
-const weekDays = [
+const weekDays: { label: string; value: WeekDayType }[] = [
   { label: "Да", value: "MON" },
   { label: "Мя", value: "TUE" },
   { label: "Лх", value: "WED" },
@@ -93,18 +99,17 @@ export const ClubRegisterBtnDialogContent = () => {
   const [clubName, setClubName] = useState<string>("");
   const [clubCategoryName, setClubCategoryName] = useState<string>("");
   const [selectedClassLevelNames, setSelectedClassLevelNames] = useState<
-    string[]
+    ClassLevelsType[]
   >([]);
-  const [clubPrices, setClubPrices] = useState<Record<string, number>>({});
+  const [clubPrices, setClubPrices] = useState<ClubPricesType>({});
   const [clubImage, setClubImage] = useState<File | undefined>();
   const [clubImagePreview, setClubImagePreview] = useState<string>("");
   const [clubDescription, setClubDescription] = useState<string>("");
   const [selectedClubWorkingDays, setSelectedClubWorkingDays] = useState<
-    string[]
+    WeekDayType[]
   >([]);
-  const [scheduledClubTimes, setScheduledClubTimes] = useState<
-    Record<string, { startTime: string; endTime: string }>
-  >({});
+  const [scheduledClubTimes, setScheduledClubTimes] =
+    useState<ScheduledClubTimesType>({});
   const [clubAddress, setClubAddress] = useState<string>("");
   const [clubLat, setClubLat] = useState<number | null>(null);
   const [clubLong, setClubLong] = useState<number | null>(null);
@@ -112,7 +117,7 @@ export const ClubRegisterBtnDialogContent = () => {
   const [teacherImage, setTeacherImage] = useState<File | undefined>();
   const [teacherImagePreview, setTeacherImagePreview] = useState<string>("");
   const [teacherName, setTeacherName] = useState<string>("");
-  const [teacherPhone, setTeacherPhone] = useState<number>();
+  const [teacherPhone, setTeacherPhone] = useState<string>("");
   const [teacherEmail, setTeacherEmail] = useState<string>("");
   const [teacherProfession, setTeacherProfession] = useState<string>("");
   const [teacherExperience, setTeacherExperience] = useState<string>("");
@@ -120,7 +125,7 @@ export const ClubRegisterBtnDialogContent = () => {
   // const { getToken } = useAuth();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const handleSelectedClubWorkingDays = (days: string[]) => {
+  const handleSelectedClubWorkingDays = (days: WeekDayType[]) => {
     setSelectedClubWorkingDays(days);
 
     setScheduledClubTimes((prev) => {
@@ -132,10 +137,9 @@ export const ClubRegisterBtnDialogContent = () => {
         }
       });
 
-      Object.keys(updated).forEach((day) => {
-        if (!day.includes(day)) {
-          delete updated[day];
-        }
+      Object.keys(updated).forEach((key) => {
+        if (!days.includes(key as WeekDayType))
+          delete updated[key as WeekDayType];
       });
 
       return updated;
@@ -145,8 +149,7 @@ export const ClubRegisterBtnDialogContent = () => {
   const clubImageFileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setClubImage(e.target.files[0]);
-      const filePreview = URL.createObjectURL(e.target.files[0]);
-      setClubImagePreview(filePreview);
+      setClubImagePreview(URL.createObjectURL(e.target.files[0]));
     }
   };
 
@@ -158,8 +161,7 @@ export const ClubRegisterBtnDialogContent = () => {
   const teacherImageFileChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setTeacherImage(e.target.files[0]);
-      const filePreview = URL.createObjectURL(e.target.files[0]);
-      setTeacherImagePreview(filePreview);
+      setTeacherImagePreview(URL.createObjectURL(e.target.files[0]));
     }
   };
 
@@ -169,15 +171,15 @@ export const ClubRegisterBtnDialogContent = () => {
     if (
       !clubName ||
       !clubCategoryName ||
-      !selectedClassLevelNames ||
-      !clubPrices ||
+      selectedClassLevelNames.length === 0 ||
+      Object.keys(clubPrices).length === 0 ||
       !clubImage ||
       !clubDescription ||
-      !selectedClubWorkingDays ||
-      !scheduledClubTimes ||
+      selectedClubWorkingDays.length === 0 ||
+      Object.keys(scheduledClubTimes).length === 0 ||
       !clubAddress ||
-      !clubLat ||
-      !clubLong ||
+      clubLat === null ||
+      clubLong === null ||
       !teacherImage ||
       !teacherName ||
       !teacherPhone ||
@@ -187,7 +189,7 @@ export const ClubRegisterBtnDialogContent = () => {
       !teacherAchievement
       // !token
     ) {
-      toast.warning("All fields are required!");
+      toast.warning("Бүх талбаруудыг бөглөнө үү!");
       return;
     }
 
@@ -213,17 +215,23 @@ export const ClubRegisterBtnDialogContent = () => {
     newForm.append("clubLong", String(clubLong));
     newForm.append("teacherImage", teacherImage as File);
     newForm.append("teacherName", teacherName);
-    newForm.append("teacherPhone", String(teacherPhone));
+    newForm.append("teacherPhone", teacherPhone);
     newForm.append("teacherEmail", teacherEmail);
     newForm.append("teacherProfession", teacherProfession);
     newForm.append("teacherExperience", teacherExperience);
     newForm.append("teacherAchievement", teacherAchievement);
 
-    await fetch("/api/create-club", {
+    const res = await fetch("/api/create-club", {
       method: "POST",
       body: newForm,
     });
 
+    if (!res.ok) {
+      toast.error("Дугуйлан мэдээлэд хадгалахад алдаа гарлаа!");
+      setLoading(false);
+      return;
+    }
+    toast.success("Амжилттай хадгаллаа!");
     setLoading(false);
   };
 
@@ -301,11 +309,13 @@ export const ClubRegisterBtnDialogContent = () => {
                 type="multiple"
                 value={selectedClassLevelNames}
                 onValueChange={(values) => {
-                  setSelectedClassLevelNames(values);
+                  const typedValues = values as ClassLevelsType[];
+                  setSelectedClassLevelNames(typedValues);
                   setClubPrices((prev) => {
                     const updated = { ...prev };
                     Object.keys(updated).forEach((key) => {
-                      if (!values.includes(key)) delete updated[key];
+                      if (!typedValues.includes(key as ClassLevelsType))
+                        delete updated[key as ClassLevelsType];
                     });
                     return updated;
                   });
@@ -475,14 +485,14 @@ export const ClubRegisterBtnDialogContent = () => {
               <Input
                 type="number"
                 name="clubLat"
-                placeholder="Уртраг"
+                placeholder="Өргөрөг"
                 value={clubLat || ""}
                 onChange={(e) => setClubLat(Number(e.target.value))}
               />
               <Input
                 type="number"
                 name="clubLong"
-                placeholder="Өргөрөг"
+                placeholder="Уртраг"
                 value={clubLong || ""}
                 onChange={(e) => setClubLong(Number(e.target.value))}
               />
@@ -556,9 +566,8 @@ export const ClubRegisterBtnDialogContent = () => {
             <Label htmlFor="teacherPhone">Утас:</Label>
             <Input
               id="teacherPhone"
-              type="number"
               value={teacherPhone}
-              onChange={(e) => setTeacherPhone(Number(e.target.value))}
+              onChange={(e) => setTeacherPhone(e.target.value)}
               placeholder="Багшийн холбоо барих утсыг оруулна уу..."
             />
           </div>
@@ -605,7 +614,11 @@ export const ClubRegisterBtnDialogContent = () => {
         </div>
       </div>
       <DialogFooter>
-        <Button onClick={handleSaveClubInfo} className="cursor-pointer">
+        <Button
+          disabled={loading}
+          onClick={handleSaveClubInfo}
+          className="cursor-pointer"
+        >
           Мэдээлэл хадгалах
         </Button>
       </DialogFooter>

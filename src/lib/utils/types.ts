@@ -1,17 +1,37 @@
+export type ClassLevelsType = "Elementary" | "Middle" | "High";
+
+export type WeekDayType = "MON" | "TUE" | "WED" | "THU" | "FRI" | "SAT" | "SUN";
+
+export type ClubPricesType = {
+  Elementary?: number;
+  Middle?: number;
+  High?: number;
+};
+
+export type ScheduledClubTimesType = {
+  MON?: { startTime: string; endTime: string };
+  TUE?: { startTime: string; endTime: string };
+  WED?: { startTime: string; endTime: string };
+  THU?: { startTime: string; endTime: string };
+  FRI?: { startTime: string; endTime: string };
+  SAT?: { startTime: string; endTime: string };
+  SUN?: { startTime: string; endTime: string };
+};
+
 export type NewClubType = {
   _id?: string;
   clubName: string;
   clubCategoryName: string;
-  selectedClassLevelNames: string[];
-  clubPrices: number[];
-  clubImage: string;
+  selectedClassLevelNames?: ClassLevelsType[];
+  clubPrices?: ClubPricesType;
+  clubImage: string | File;
   clubDescription: string;
-  selectedClubWorkingDays: string[];
-  scheduledClubTimes: string[];
+  selectedClubWorkingDays?: WeekDayType[];
+  scheduledClubTimes?: ScheduledClubTimesType;
   clubAddress: string;
-  clubLat: number;
-  clubLong: number;
-  teacherImage: string;
+  clubLat: number | null;
+  clubLong: number | null;
+  teacherImage: string | File;
   teacherName: string;
   teacherPhone: string;
   teacherEmail: string;
