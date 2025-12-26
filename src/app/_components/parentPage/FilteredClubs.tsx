@@ -205,10 +205,6 @@ export const FilteredClubs = () => {
     <div className="relative">
       {/* Sports Categories */}
       <section id="sports" className="py-16 md:py-24 relative z-10">
-        <div>
-          <AllClubsCard />
-        </div>
-
         <div className="container mx-auto px-4">
           <div className="text-center mb-8" data-scroll-point="search-title">
             <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
@@ -385,15 +381,6 @@ export const FilteredClubs = () => {
               </div>
             </div>
           )}
-
-          {/* Filtered Results */}
-          <div data-scroll-point="results">
-            <FilteredResultsClubCard
-              filteredClubs={filteredClubs}
-              resetFilters={resetFilters}
-              isFiltered={Boolean(isFiltered)}
-            />
-          </div>
         </div>
       </section>
     </div>
