@@ -12,6 +12,7 @@ import { verifyToken } from "@clerk/backend";
 import { error } from "console";
 import { headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import Ably from "ably";
 
 export async function POST(req: NextRequest) {
   try {
@@ -142,7 +143,12 @@ export async function POST(req: NextRequest) {
       teacherAchievement,
     };
 
-    await createNewClub(newClubData);
+    const clubCreated = await createNewClub(newClubData);
+
+    const ably = new Ably.Rest({ key: process.env.ABLY_API_KEY });
+    await ably.channels
+      .get("clubs")
+      .publish({ name: "club-created", data: clubCreated });
 
     return NextResponse.json(
       { message: "Club info saved successfully!" },

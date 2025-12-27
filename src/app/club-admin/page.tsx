@@ -1,9 +1,11 @@
 "use client";
 
 import React from "react";
-import SportClubCard from "./admin-card/page";
+import SportClubCard from "./_components/SportClubCard";
+import { useClub } from "../hooks/use-club";
 
-const ClubAdminPage: React.FC = () => {
+const ClubAdminPage = () => {
+  const { allClubs } = useClub();
   return (
     <main className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -14,6 +16,11 @@ const ClubAdminPage: React.FC = () => {
           <p className="mt-2 text-sm text-gray-600">
             Нэг дор дугуйлан, багш, хуваарь болон бүртгэлийг хянах самбар.
           </p>
+          <div>
+            {allClubs.map((club) => (
+              <div>{club.clubName}</div>
+            ))}
+          </div>
         </div>
 
         <section aria-labelledby="clubs-heading">

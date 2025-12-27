@@ -8,3 +8,9 @@ export const createNewClub = async (newClubData: NewClubType) => {
   await newClub.save();
   return newClub;
 };
+
+export const getAllClubs = async () => {
+  await connectDB();
+
+  return await Club.find().sort({ createdAt: -1 });
+};
