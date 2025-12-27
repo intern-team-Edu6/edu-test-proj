@@ -1,6 +1,6 @@
 "use client";
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, Dispatch, useState } from "react";
 import {
   DialogContent,
   DialogDescription,
@@ -95,7 +95,11 @@ const weekDays: { label: string; value: WeekDayType }[] = [
   { label: "Ня", value: "SUN" },
 ];
 
-export const ClubRegisterBtnDialogContent = () => {
+export const ClubRegisterBtnDialogContent = ({
+  setOpen,
+}: {
+  setOpen: Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [clubName, setClubName] = useState<string>("");
   const [clubCategoryName, setClubCategoryName] = useState<string>("");
   const [selectedClassLevelNames, setSelectedClassLevelNames] = useState<
@@ -194,45 +198,72 @@ export const ClubRegisterBtnDialogContent = () => {
     }
 
     setLoading(true);
-    const newForm = new FormData();
 
-    newForm.append("clubName", clubName);
-    newForm.append("clubCategoryName", clubCategoryName);
-    newForm.append(
-      "selectedClassLevelNames",
-      JSON.stringify(selectedClassLevelNames)
-    );
-    newForm.append("clubPrices", JSON.stringify(clubPrices));
-    newForm.append("clubImage", clubImage as File);
-    newForm.append("clubDescription", clubDescription);
-    newForm.append(
-      "selectedClubWorkingDays",
-      JSON.stringify(selectedClubWorkingDays)
-    );
-    newForm.append("scheduledClubTimes", JSON.stringify(scheduledClubTimes));
-    newForm.append("clubAddress", clubAddress);
-    newForm.append("clubLat", String(clubLat));
-    newForm.append("clubLong", String(clubLong));
-    newForm.append("teacherImage", teacherImage as File);
-    newForm.append("teacherName", teacherName);
-    newForm.append("teacherPhone", teacherPhone);
-    newForm.append("teacherEmail", teacherEmail);
-    newForm.append("teacherProfession", teacherProfession);
-    newForm.append("teacherExperience", teacherExperience);
-    newForm.append("teacherAchievement", teacherAchievement);
+    try {
+      const newForm = new FormData();
 
-    const res = await fetch("/api/create-club", {
-      method: "POST",
-      body: newForm,
-    });
+      newForm.append("clubName", clubName);
+      newForm.append("clubCategoryName", clubCategoryName);
+      newForm.append(
+        "selectedClassLevelNames",
+        JSON.stringify(selectedClassLevelNames)
+      );
+      newForm.append("clubPrices", JSON.stringify(clubPrices));
+      newForm.append("clubImage", clubImage as File);
+      newForm.append("clubDescription", clubDescription);
+      newForm.append(
+        "selectedClubWorkingDays",
+        JSON.stringify(selectedClubWorkingDays)
+      );
+      newForm.append("scheduledClubTimes", JSON.stringify(scheduledClubTimes));
+      newForm.append("clubAddress", clubAddress);
+      newForm.append("clubLat", String(clubLat));
+      newForm.append("clubLong", String(clubLong));
+      newForm.append("teacherImage", teacherImage as File);
+      newForm.append("teacherName", teacherName);
+      newForm.append("teacherPhone", teacherPhone);
+      newForm.append("teacherEmail", teacherEmail);
+      newForm.append("teacherProfession", teacherProfession);
+      newForm.append("teacherExperience", teacherExperience);
+      newForm.append("teacherAchievement", teacherAchievement);
 
-    if (!res.ok) {
-      toast.error("Дугуйлан мэдээлэд хадгалахад алдаа гарлаа!");
+      const res = await fetch("/api/create-club", {
+        method: "POST",
+        body: newForm,
+      });
+
+      if (!res.ok) {
+        toast.error("Дугуйлан мэдээлэд хадгалахад алдаа гарлаа!");
+        setLoading(false);
+        return;
+      }
+      toast.success("Амжилттай хадгаллаа!");
+      setClubName("");
+      setClubCategoryName("");
+      setSelectedClassLevelNames([]);
+      setClubPrices({});
+      setClubImage(undefined);
+      setClubImagePreview("");
+      setClubDescription("");
+      setSelectedClubWorkingDays([]);
+      setScheduledClubTimes({});
+      setClubAddress("");
+      setClubLat(null);
+      setClubLong(null);
+      setTeacherImage(undefined);
+      setTeacherImagePreview("");
+      setTeacherName("");
+      setTeacherPhone("");
+      setTeacherEmail("");
+      setTeacherProfession("");
+      setTeacherExperience("");
+      setTeacherAchievement("");
+      setOpen(false);
+    } catch (error) {
+      console.error("");
+    } finally {
       setLoading(false);
-      return;
     }
-    toast.success("Амжилттай хадгаллаа!");
-    setLoading(false);
   };
 
   console.log({ clubName });

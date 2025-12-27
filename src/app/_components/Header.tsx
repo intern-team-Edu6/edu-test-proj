@@ -30,7 +30,7 @@ export const Header = () => {
                 Дугуйлан Бүртгүүлэх
               </Button>
             </DialogTrigger>
-            <ClubRegisterBtnDialogContent />
+            <ClubRegisterBtnDialogContent setOpen={setOpen} />
           </Dialog>
           {/* )} */}
 
